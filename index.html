@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Australasian Medico-Legal Services — Independent Medical Examinations</title>
+<meta name="description" content="Independent medical examinations, permanent impairment assessment and expert medico-legal opinion by Assoc. Prof. Vaidya Bala, Rehabilitation Physician and Certified Independent Medical Examiner. Shellharbour Private Consulting Suites, Barrack Heights NSW.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#13243a;          /* deep oxford navy */
+    --ink-2:#27405a;        /* slate */
+    --paper:#eceee9;        /* cool clinical bone */
+    --paper-2:#e3e6df;      /* deeper bone band */
+    --card:#fafbf8;         /* near-white card */
+    --brass:#9a7635;        /* restrained seal/justice accent */
+    --brass-soft:#b89a64;
+    --muted:#5b6573;        /* muted text */
+    --line:#cfd3cb;         /* hairlines */
+    --line-ink:rgba(255,255,255,.16);
+    --maxw:1180px;
+    --serif:'Spectral',Georgia,serif;
+    --sans:'Public Sans',system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:17px;line-height:1.65;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  a{color:inherit}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;letter-spacing:-.01em}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .eyebrow{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--brass);margin:0 0 18px;font-weight:500;
+    display:flex;align-items:center;gap:12px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--brass);display:inline-block}
+
+  /* ---------- skip link ---------- */
+  .skip{position:absolute;left:-9999px;top:0;background:var(--ink);color:#fff;padding:10px 16px;z-index:200}
+  .skip:focus{left:8px;top:8px}
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(236,238,233,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:var(--maxw);margin:0 auto;padding:0 28px;height:68px;
+    display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .brand{display:flex;align-items:center;gap:13px;text-decoration:none;flex-shrink:0}
+  .brand .mk{width:30px;height:30px;flex-shrink:0}
+  .brand b{font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.05;letter-spacing:-.01em}
+  .brand small{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);margin-top:2px;font-weight:400}
+  .navlinks{display:flex;align-items:center;gap:30px}
+  .navlinks a{font-size:14.5px;text-decoration:none;color:var(--ink-2);font-weight:500;
+    position:relative;padding:6px 0;transition:color .2s}
+  .navlinks a::after{content:"";position:absolute;left:0;bottom:0;height:1.5px;width:0;
+    background:var(--brass);transition:width .25s ease}
+  .navlinks a:hover{color:var(--ink)}
+  .navlinks a:hover::after{width:100%}
+  .navlinks a.cta{background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:2px}
+  .navlinks a.cta::after{display:none}
+  .navlinks a.cta:hover{background:var(--brass)}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:2px;
+    width:42px;height:38px;cursor:pointer;color:var(--ink)}
+  .menu-btn svg{width:20px;height:20px}
+  @media(max-width:880px){
+    .navlinks{position:fixed;inset:68px 0 auto 0;flex-direction:column;align-items:stretch;
+      gap:0;background:var(--paper);border-bottom:1px solid var(--line);
+      padding:8px 28px 22px;transform:translateY(-130%);transition:transform .3s ease;
+      box-shadow:0 20px 40px -28px rgba(19,36,58,.4)}
+    .navlinks.open{transform:translateY(0)}
+    .navlinks a{padding:14px 0;border-bottom:1px solid var(--line)}
+    .navlinks a.cta{text-align:center;margin-top:14px;padding:13px;border:none}
+    .menu-btn{display:flex;align-items:center;justify-content:center}
+  }
+
+  /* ---------- hero / letterhead title block ---------- */
+  .hero{background:var(--ink);color:var(--paper);padding:148px 0 0;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 80% at 85% -10%,rgba(154,118,53,.16),transparent 55%);pointer-events:none}
+  .hero .wrap{position:relative}
+  .filemark{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--brass-soft);display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:30px}
+  .filemark span{display:flex;align-items:center;gap:9px}
+  .filemark span::before{content:"";width:5px;height:5px;border:1px solid var(--brass);transform:rotate(45deg)}
+  .hero h1{font-size:clamp(2.6rem,6.2vw,5rem);line-height:1.02;font-weight:400;
+    letter-spacing:-.025em;max-width:14ch}
+  .hero h1 em{font-style:italic;color:var(--brass-soft)}
+  .hero .lede{font-size:clamp(1.05rem,2vw,1.3rem);color:#c8cfd9;max-width:48ch;
+    margin:28px 0 0;font-weight:300;line-height:1.55}
+  .rule-brass{height:1px;background:linear-gradient(90deg,var(--brass),transparent);margin:40px 0 0;border:0}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:16px;margin:34px 0 0}
+  .btn{font-family:var(--sans);font-size:15px;font-weight:600;text-decoration:none;
+    padding:14px 26px;border-radius:2px;transition:all .22s;display:inline-flex;align-items:center;gap:10px;cursor:pointer;border:none}
+  .btn-primary{background:var(--brass);color:#fff}
+  .btn-primary:hover{background:#b08a44}
+  .btn-ghost{background:transparent;color:var(--paper);border:1px solid var(--line-ink)}
+  .btn-ghost:hover{border-color:var(--brass-soft);color:#fff}
+  .btn svg{width:15px;height:15px}
+  /* credential ledger */
+  .ledger{margin:64px 0 0;border-top:1px solid var(--line-ink);
+    display:grid;grid-template-columns:repeat(4,1fr)}
+  .ledger div{padding:26px 24px 30px;border-right:1px solid var(--line-ink)}
+  .ledger div:last-child{border-right:0}
+  .ledger dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass-soft);
+    text-transform:uppercase;margin-bottom:8px}
+  .ledger dd{margin:0;font-family:var(--serif);font-size:1.15rem;color:var(--paper);line-height:1.3}
+  @media(max-width:760px){.ledger{grid-template-columns:repeat(2,1fr)}
+    .ledger div:nth-child(2){border-right:0}
+    .ledger div{border-top:1px solid var(--line-ink)}
+    .ledger div:nth-child(1),.ledger div:nth-child(2){border-top:0}}
+
+  /* ---------- section scaffolding ---------- */
+  section{padding:104px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;
+    margin-bottom:54px;flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(1.9rem,4vw,2.9rem);line-height:1.05;max-width:18ch;font-weight:400}
+  .sec-head p{color:var(--muted);max-width:38ch;margin:0;font-size:16px}
+
+  /* ---------- about ---------- */
+  #about{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .about-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:64px;align-items:start}
+  @media(max-width:880px){.about-grid{grid-template-columns:1fr;gap:44px}}
+  .about-body p{margin:0 0 20px;color:#33414f;font-size:17px}
+  .about-body p:first-child{font-size:20px;font-family:var(--serif);color:var(--ink);line-height:1.5}
+  .about-body strong{font-weight:600;color:var(--ink)}
+  .appoint{background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:8px 26px 26px}
+  .appoint h3{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--brass);margin:22px 0 0;font-weight:500}
+  .appoint ul{list-style:none;margin:14px 0 0;padding:0}
+  .appoint li{padding:13px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.45;color:var(--ink-2)}
+  .appoint li:last-child{border-bottom:0}
+  .appoint li b{display:block;font-weight:600;color:var(--ink)}
+
+  /* ---------- services ---------- */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line)}
+  @media(max-width:880px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.svc-grid{grid-template-columns:1fr}}
+  .svc{background:var(--paper);padding:34px 30px 38px;transition:background .25s}
+  .svc:hover{background:var(--card)}
+  .svc .ix{font-family:var(--mono);font-size:12px;color:var(--brass);letter-spacing:.1em}
+  .svc h3{font-size:1.32rem;margin:16px 0 12px;font-weight:500;line-height:1.2}
+  .svc p{margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+
+  /* ---------- virtual ---------- */
+  #virtual{background:var(--ink);color:var(--paper)}
+  #virtual .sec-head h2{color:var(--paper)}
+  #virtual .sec-head p{color:#aab4c1}
+  #virtual .eyebrow{color:var(--brass-soft)}
+  #virtual .eyebrow::before{background:var(--brass-soft)}
+  .vc-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center}
+  @media(max-width:880px){.vc-grid{grid-template-columns:1fr;gap:42px}}
+  .vc-steps{counter-reset:step;margin:0;padding:0;list-style:none}
+  .vc-steps li{position:relative;padding:0 0 30px 60px;border-left:1px solid var(--line-ink);margin-left:18px}
+  .vc-steps li:last-child{padding-bottom:0}
+  .vc-steps li::before{counter-increment:step;content:counter(step,decimal-leading-zero);
+    position:absolute;left:-18px;top:-4px;width:36px;height:36px;background:var(--ink);
+    border:1px solid var(--brass);color:var(--brass-soft);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px}
+  .vc-steps h3{font-size:1.2rem;color:var(--paper);margin:0 0 6px;font-weight:500}
+  .vc-steps p{margin:0;color:#aab4c1;font-size:15px}
+  .vc-note{background:rgba(255,255,255,.04);border:1px solid var(--line-ink);border-radius:3px;
+    padding:34px 32px}
+  .vc-note .eyebrow{margin-bottom:14px}
+  .vc-note p{margin:0 0 16px;color:#c8cfd9;font-size:16px;line-height:1.6}
+  .vc-note p:last-child{margin-bottom:0}
+  .vc-note ul{margin:0;padding-left:20px;color:#aab4c1;font-size:15px}
+  .vc-note li{margin-bottom:9px}
+
+  /* ---------- location ---------- */
+  #location{background:var(--card);border-top:1px solid var(--line)}
+  .loc-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:56px;align-items:stretch}
+  @media(max-width:880px){.loc-grid{grid-template-columns:1fr;gap:36px}}
+  .addr-card{background:var(--paper);border:1px solid var(--line);border-radius:3px;
+    padding:38px 36px;display:flex;flex-direction:column}
+  .addr-card .pin{width:34px;height:34px;color:var(--brass);margin-bottom:22px}
+  .addr-card .suite{font-family:var(--serif);font-size:1.5rem;color:var(--ink);line-height:1.2;margin:0 0 6px}
+  .addr-card address{font-style:normal;font-size:17px;color:var(--ink-2);line-height:1.6}
+  .addr-meta{margin-top:auto;padding-top:28px;border-top:1px solid var(--line)}
+  .addr-meta dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:12px 18px}
+  .addr-meta dt{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brass);padding-top:3px}
+  .addr-meta dd{margin:0;color:var(--ink-2);font-size:15.5px;overflow-wrap:anywhere}
+  .addr-meta dd a{display:inline-block;margin:1px 0}
+  .addr-meta a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--brass-soft)}
+  .map-frame{border:1px solid var(--line);border-radius:3px;overflow:hidden;min-height:380px}
+  .map-frame iframe{width:100%;height:100%;min-height:380px;border:0;display:block;filter:saturate(.85)}
+
+  /* ---------- contact ---------- */
+  #contact{background:var(--ink);color:var(--paper);text-align:center;padding:120px 0}
+  #contact::after{content:"";display:block}
+  #contact .eyebrow{justify-content:center;color:var(--brass-soft)}
+  #contact .eyebrow::before{display:none}
+  #contact h2{font-size:clamp(2rem,5vw,3.4rem);font-weight:400;line-height:1.05;max-width:20ch;margin:0 auto}
+  #contact p.sub{color:#aab4c1;max-width:50ch;margin:24px auto 0;font-size:17px}
+  .mailbox{margin:42px auto 0;display:inline-flex;flex-direction:column;align-items:center;gap:4px;max-width:100%}
+  .mailbox a.email{font-family:var(--serif);font-size:clamp(1.25rem,3.4vw,1.95rem);color:var(--brass-soft);
+    text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s;
+    word-break:break-word;line-height:1.2}
+  .mailbox a.email.email-alt{font-size:clamp(1.05rem,2.6vw,1.4rem);color:#aab4c1}
+  .mailbox a.email:hover{border-color:currentColor}
+  .mailbox .sep{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:#5d6b7c;margin:6px 0}
+  .mailbox span{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8794a3;margin-top:10px}
+  .contact-actions{margin-top:36px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- footer ---------- */
+  footer.foot{background:#0d1a2a;color:#8794a3;padding:46px 0;font-size:13.5px}
+  .foot-inner{max-width:var(--maxw);margin:0 auto;padding:0 28px;
+    display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}
+  .foot-inner .l{display:flex;align-items:center;gap:12px}
+  .foot-inner .l .mk{width:26px;height:26px}
+  .foot-inner b{color:var(--paper);font-family:var(--serif);font-weight:500;font-size:15px}
+  .foot-nav{display:flex;gap:24px;flex-wrap:wrap}
+  .foot-nav a{color:#8794a3;text-decoration:none;transition:color .2s}
+  .foot-nav a:hover{color:var(--brass-soft)}
+  .foot-fine{font-family:var(--mono);font-size:11px;letter-spacing:.04em;line-height:1.7;
+    color:#5d6b7c;margin-top:30px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);
+    max-width:var(--maxw);margin-left:auto;margin-right:auto;padding-left:28px;padding-right:28px}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  :focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:2px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- seal mark reused -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="seal" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.8"/>
+    <path d="M50 24 L50 76 M34 40 L66 40" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <path d="M34 40 a8 8 0 0 0 8 8 M66 40 a8 8 0 0 1 -8 8" stroke="currentColor" stroke-width="1.6" fill="none"/>
+    <path d="M42 48 L50 60 L58 48 Z" fill="currentColor"/>
+    <circle cx="50" cy="24" r="3.5" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#home" aria-label="Australasian Medico-Legal Services home">
+      <svg class="mk" style="color:var(--brass)"><use href="#seal"/></svg>
+      <span><b>Australasian Medico-Legal</b><small>Independent Medical Examinations</small></span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="navlinks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="navlinks" id="navlinks" aria-label="Primary">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#location">Location</a>
+      <a href="#virtual">Virtual Consultation</a>
+      <a class="cta" href="#contact">Request a Report</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HOME / HERO ============ -->
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="filemark">
+      <span>Re: Independent Medical Opinion</span>
+      <span>Rehabilitation Medicine</span>
+      <span>NSW · Australasia</span>
+    </div>
+    <h1>Independent medical opinion, prepared with <em>clinical authority</em>.</h1>
+    <p class="lede">Specialist independent medical examinations, permanent impairment assessment and expert medico-legal reports for solicitors, insurers, employers and the courts.</p>
+    <hr class="rule-brass">
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#contact">Request a report
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-ghost" href="#services">View scope of practice</a>
+    </div>
+
+    <dl class="ledger">
+      <div><dt>Examiner</dt><dd>Assoc. Prof. Vaidya Bala</dd></div>
+      <div><dt>Discipline</dt><dd>Rehabilitation Medicine</dd></div>
+      <div><dt>Accreditation</dt><dd>CIME · AMA 4 / 5 / 6</dd></div>
+      <div><dt>Fellowships</dt><dd>FAFRM (RACP) · FESO</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">About the practitioner</p>
+        <h2>A rehabilitation physician with three decades at the bench and the bedside.</h2>
+      </div>
+      <p>Independent, impartial and grounded in active clinical and academic practice.</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-body reveal">
+        <p>Associate Professor Vaidya Bala is an accomplished rehabilitation physician whose practice spans clinical care, academic medicine, teaching and health leadership across Australia and New Zealand.</p>
+        <p>He currently serves as <strong>Medical Co-Director of Population and Public Health</strong> and <strong>Senior Staff Specialist in Rehabilitation Medicine</strong> with the Illawarra and Shoalhaven Local Health District, and as <strong>Conjoint Associate Professor</strong> with the University of Wollongong. He is a senior examiner for the FAFRM (RACP) Court of Examiners.</p>
+        <p>As a <strong>Certified Independent Medical Examiner</strong>, he provides accredited permanent impairment assessment under the AMA Guides (4th, 5th and 6th editions). His clinical expertise covers acquired and traumatic brain injury, stroke and neurological rehabilitation, movement disorders and spasticity, functional neurological disorder, and chronic pain — informed by statewide brain injury services and more than twenty years of consultant practice.</p>
+        <p>His opinions are independent of any treating relationship and prepared to assist the referrer and, where relevant, the court — clear, evidence-based and balanced.</p>
+      </div>
+
+      <aside class="appoint reveal" aria-label="Appointments and credentials">
+        <h3>Current Appointments</h3>
+        <ul>
+          <li><b>Medical Co-Director, Population &amp; Public Health</b>Illawarra &amp; Shoalhaven LHD</li>
+          <li><b>Senior Staff Specialist, Rehabilitation Medicine</b>Wollongong &amp; Port Kembla Hospitals</li>
+          <li><b>Conjoint Associate Professor</b>University of Wollongong</li>
+          <li><b>Senior Examiner, FAFRM (RACP)</b>Court of Examiners</li>
+        </ul>
+        <h3>Qualifications</h3>
+        <ul>
+          <li><b>MBBS</b>University of Madras · AMC accredited</li>
+          <li><b>FAFRM (RACP)</b>Australasian Faculty of Rehabilitation Medicine</li>
+          <li><b>FESO</b>Fellow, European Stroke Organisation</li>
+          <li><b>CIME · AFRACMA · Grad Cert Health Prof. Ed.</b>DSc (Health Sciences)</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">Services</p>
+        <h2>Independent assessment across the rehabilitation and neurological spectrum.</h2>
+      </div>
+      <p>Reports tailored to the referrer's question — liability, quantum, capacity or treatment.</p>
+    </div>
+
+    <div class="svc-grid">
+      <article class="svc reveal"><div class="ix">i.</div>
+        <h3>Independent Medical Examinations</h3>
+        <p>Impartial specialist examination and opinion for solicitors, insurers, employers and the courts, addressing the specific questions referred.</p></article>
+
+      <article class="svc reveal"><div class="ix">ii.</div>
+        <h3>Permanent Impairment Assessment</h3>
+        <p>Whole person impairment under the AMA Guides 4th, 5th and 6th editions by an accredited impairment assessor.</p></article>
+
+      <article class="svc reveal"><div class="ix">iii.</div>
+        <h3>Causation &amp; Liability Opinions</h3>
+        <p>Considered opinion on diagnosis, causation and the relationship between injury, condition and reported events.</p></article>
+
+      <article class="svc reveal"><div class="ix">iv.</div>
+        <h3>Brain Injury Assessment</h3>
+        <p>Acquired and traumatic brain injury, including mild TBI, drawing on statewide brain injury service experience.</p></article>
+
+      <article class="svc reveal"><div class="ix">v.</div>
+        <h3>Neurological Rehabilitation Opinion</h3>
+        <p>Stroke, Parkinson's and movement disorders, spasticity and functional neurological disorder — diagnosis, prognosis and rehabilitation needs.</p></article>
+
+      <article class="svc reveal"><div class="ix">vi.</div>
+        <h3>Chronic Pain Assessment</h3>
+        <p>Multidisciplinary chronic pain evaluation, including medication, opioid and return-to-driving considerations.</p></article>
+
+      <article class="svc reveal"><div class="ix">vii.</div>
+        <h3>Work &amp; Functional Capacity</h3>
+        <p>Assessment of current capacity, restrictions, treatment requirements and prospects for return to work or daily function.</p></article>
+
+      <article class="svc reveal"><div class="ix">viii.</div>
+        <h3>Telehealth Assessment</h3>
+        <p>Secure video examination and file review for matters across Australia and New Zealand where in-person attendance is not required.</p></article>
+
+      <article class="svc reveal"><div class="ix">ix.</div>
+        <h3>File &amp; Records Review</h3>
+        <p>Independent review of clinical records and supplementary opinion where a fresh examination is not sought.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIRTUAL CONSULTATION ============ -->
+<section id="virtual">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">Virtual consultation</p>
+        <h2>Medico-legal assessment by secure video, wherever the matter sits.</h2>
+      </div>
+      <p>Convenient for regional referrers and examinees, without compromising rigour.</p>
+    </div>
+
+    <div class="vc-grid">
+      <ol class="vc-steps reveal">
+        <li><h3>Referral &amp; brief</h3><p>Send the letter of instruction, specific questions and supporting records by email. Suitability for a virtual assessment is confirmed on review.</p></li>
+        <li><h3>Scheduled video examination</h3><p>The examinee attends a confidential video consultation at an arranged time, from home or the instructing office, on a secure platform.</p></li>
+        <li><h3>Independent report</h3><p>A structured, evidence-based report is prepared addressing each question, with impairment ratings provided where requested.</p></li>
+      </ol>
+
+      <div class="vc-note reveal">
+        <p class="eyebrow">Is a virtual assessment suitable?</p>
+        <p>Telehealth examination is well suited to many file reviews, supplementary opinions and assessments where a detailed physical examination is not central to the question.</p>
+        <p>Drawing on published work in benefit–risk frameworks for virtual health care, each referral is screened so that matters genuinely requiring in-person examination are identified early and arranged at the Shellharbour consulting suites.</p>
+        <ul>
+          <li>Available across Australia and New Zealand</li>
+          <li>Secure, confidential video platform</li>
+          <li>Records and instructions accepted electronically</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCATION ============ -->
+<section id="location">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <p class="eyebrow">Location</p>
+        <h2>Consulting rooms on the Illawarra coast.</h2>
+      </div>
+      <p>In-person examinations by appointment at the Shellharbour private suites.</p>
+    </div>
+
+    <div class="loc-grid">
+      <div class="addr-card reveal">
+        <svg class="pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+        <p class="suite">Shellharbour Private Consulting Suites</p>
+        <address>
+          27 Captain Cook Drive<br>
+          Barrack Heights, NSW 2529<br>
+          Australia
+        </address>
+        <div class="addr-meta">
+          <dl>
+            <dt>Region</dt><dd>Illawarra &amp; Shoalhaven</dd>
+            <dt>Access</dt><dd>By appointment</dd>
+            <dt>Enquiries</dt><dd><a href="mailto:admin@australasianmedicolegal.com.au">admin@australasianmedicolegal.com.au</a><br><a href="mailto:drvnors@gmail.com">drvnors@gmail.com</a></dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="map-frame reveal">
+        <iframe
+          title="Map to Shellharbour Private Consulting Suites, 27 Captain Cook Drive, Barrack Heights NSW 2529"
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=27%20Captain%20Cook%20Drive%2C%20Barrack%20Heights%20NSW%202529&t=&z=15&ie=UTF8&iwloc=&output=embed">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Request a report</p>
+    <h2>Send a letter of instruction or enquire about availability.</h2>
+    <p class="sub">Please include your specific questions, the relevant records and any deadline. New referrals and enquiries are welcome from solicitors, insurers, employers and self-represented parties.</p>
+    <div class="mailbox">
+      <a class="email" href="mailto:admin@australasianmedicolegal.com.au?subject=Medico-Legal%20Referral%20Enquiry">admin@australasianmedicolegal.com.au</a>
+      <span class="sep">— or —</span>
+      <a class="email email-alt" href="mailto:drvnors@gmail.com?subject=Medico-Legal%20Referral%20Enquiry">drvnors@gmail.com</a>
+      <span>Australasian Medico-Legal Services</span>
+    </div>
+    <div class="contact-actions">
+      <a class="btn btn-primary" href="mailto:drvnors@gmail.com?subject=Medico-Legal%20Referral%20Enquiry">
+        Compose referral email
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg></a>
+      <a class="btn btn-ghost" href="#location">View location</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div class="l">
+      <svg class="mk" style="color:var(--brass-soft)"><use href="#seal"/></svg>
+      <b>Australasian Medico-Legal Services</b>
+    </div>
+    <nav class="foot-nav" aria-label="Footer">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#location">Location</a>
+      <a href="#virtual">Virtual Consultation</a>
+      <a href="mailto:drvnors@gmail.com">Contact</a>
+    </nav>
+  </div>
+  <p class="foot-fine">
+    Assoc. Prof. Vaidya Bala — MBBS, FAFRM (RACP), FESO, CIME, AFRACMA. Shellharbour Private Consulting Suites, 27 Captain Cook Drive, Barrack Heights NSW 2529.<br>
+    Independent medical examinations are provided on a non-treating basis. Information on this site is general and does not constitute medical or legal advice.
+  </p>
+</footer>
+
+<script>
+  // mobile menu
+  const btn=document.getElementById('menuBtn'),links=document.getElementById('navlinks');
+  btn.addEventListener('click',()=>{const o=links.classList.toggle('open');btn.setAttribute('aria-expanded',o)});
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{links.classList.remove('open');btn.setAttribute('aria-expanded','false')}));
+
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
