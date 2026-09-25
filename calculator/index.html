@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remaining Life Years After TBI — Actuarial Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;450;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#152329;
+    --ink-soft:#3c4c52;
+    --muted:#61727a;
+    --paper:#eef3f3;
+    --panel:#ffffff;
+    --line:#d3dedd;
+    --line-soft:#e6eded;
+    --teal:#0f6b6b;
+    --teal-bright:#12857f;
+    --teal-wash:#e4f0ee;
+    --grey-ref:#9aa8a8;
+    --amber:#8a5410;
+    --amber-wash:#f8ecd4;
+    --amber-line:#e6cf9f;
+    --radius:3px;
+    --focus:#12857f;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:"Source Serif 4","Iowan Old Style",Georgia,serif;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 24px 64px;}
+
+  /* Header */
+  header{border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:26px;}
+  .kicker{color:var(--teal);font-size:12.5px;letter-spacing:.02em;font-weight:600;margin:0 0 8px;}
+  h1{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:30px;line-height:1.12;
+     letter-spacing:-.01em;margin:0 0 10px;max-width:20ch;}
+  .lede{color:var(--ink-soft);max-width:64ch;margin:0;font-size:15px;}
+  .lede b{color:var(--ink);font-weight:600;}
+
+  /* Layout */
+  .grid{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:26px;align-items:start;}
+  @media(max-width:820px){.grid{grid-template-columns:1fr;gap:20px;}}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);}
+  .panel-pad{padding:20px;}
+  .panel + .panel{margin-top:18px;}
+
+  .sec-title{font-family:"Source Serif 4",Georgia,serif;font-size:17px;font-weight:600;margin:0 0 4px;}
+  .sec-note{color:var(--muted);font-size:13px;margin:0 0 16px;}
+
+  .field{margin-bottom:20px;}
+  .field:last-child{margin-bottom:0;}
+  .flabel{font-weight:600;font-size:13.5px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:baseline;}
+  .flabel .val{font-family:"IBM Plex Mono",monospace;color:var(--teal);font-size:15px;font-weight:500;}
+
+  /* Age control */
+  .age-row{display:flex;gap:12px;align-items:center;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;background:var(--line);border-radius:2px;outline:none;margin:0;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--teal);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.15);}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--teal);cursor:pointer;}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--teal-wash);}
+  input[type=number]{width:64px;padding:7px 8px;border:1px solid var(--line);border-radius:var(--radius);font-family:"IBM Plex Mono",monospace;font-size:15px;text-align:center;color:var(--ink);background:var(--panel);}
+  input[type=number]:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--teal);}
+
+  /* Segmented */
+  .seg{display:flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .seg button{flex:1;appearance:none;border:0;background:var(--panel);padding:9px 6px;font:inherit;font-size:13.5px;color:var(--muted);cursor:pointer;border-left:1px solid var(--line);transition:background .12s,color .12s;}
+  .seg button:first-child{border-left:0;}
+  .seg button[aria-pressed=true]{background:var(--teal);color:#fff;font-weight:600;}
+  .seg button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px;}
+
+  /* Option list (categories / severity) */
+  .opts{display:flex;flex-direction:column;gap:8px;}
+  .opt{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px;cursor:pointer;transition:border-color .12s,background .12s;}
+  .opt:hover{border-color:var(--teal);}
+  .opt[data-on=true]{border-color:var(--teal);background:var(--teal-wash);}
+  .opt .radio{margin-top:2px;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--muted);flex:0 0 auto;position:relative;}
+  .opt[data-on=true] .radio{border-color:var(--teal);}
+  .opt[data-on=true] .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--teal);}
+  .opt .otxt{flex:1;min-width:0;}
+  .opt .oname{font-weight:600;font-size:14px;}
+  .opt .odef{color:var(--muted);font-size:12.5px;line-height:1.4;margin-top:2px;}
+  .opt .orr{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--teal);white-space:nowrap;margin-top:2px;}
+  .opt:focus-visible{outline:2px solid var(--focus);outline-offset:1px;}
+
+  .custom-smr{margin-top:12px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-soft);}
+  .custom-smr input{width:76px;}
+
+  /* Result hero */
+  .result{padding:22px 22px 6px;}
+  .r-eyebrow{color:var(--muted);font-size:13px;margin:0 0 6px;}
+  .r-hero{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .r-years{font-family:"Source Serif 4",Georgia,serif;font-weight:600;font-size:66px;line-height:.95;letter-spacing:-.02em;color:var(--ink);}
+  .r-unit{font-size:16px;color:var(--ink-soft);}
+  .r-sub{margin:12px 0 0;color:var(--ink-soft);font-size:14.5px;}
+  .r-sub .mono{color:var(--ink);}
+  .flag{display:inline-block;margin-top:14px;background:var(--amber-wash);border:1px solid var(--amber-line);color:var(--amber);
+        font-size:12.5px;padding:6px 10px;border-radius:var(--radius);}
+  .flag[hidden]{display:none;}
+
+  /* stat strip */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-soft);margin-top:18px;}
+  .stat{padding:14px 22px;border-left:1px solid var(--line-soft);}
+  .stat:first-child{border-left:0;padding-left:22px;}
+  .stat .k{color:var(--muted);font-size:11.5px;font-weight:500;margin-bottom:4px;}
+  .stat .v{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500;color:var(--ink);}
+  .stat .v small{font-size:12px;color:var(--muted);font-weight:400;}
+  @media(max-width:520px){.stats{grid-template-columns:1fr;}.stat{border-left:0;border-top:1px solid var(--line-soft);}.stat:first-child{border-top:0;}}
+
+  /* Curve */
+  .curve-wrap{padding:18px 22px 22px;}
+  .curve-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .curve-head .t{font-family:"Source Serif 4",Georgia,serif;font-size:15px;font-weight:600;}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);}
+  .legend i{display:inline-block;width:14px;height:0;border-top-width:2px;border-top-style:solid;vertical-align:middle;margin-right:5px;}
+  svg{display:block;width:100%;height:auto;}
+
+  /* Audit ledger */
+  .ledger .panel-pad{padding-top:16px;}
+  table.audit{width:100%;border-collapse:collapse;font-size:13.5px;}
+  table.audit td{padding:7px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;}
+  table.audit tr:last-child td{border-bottom:0;}
+  table.audit td.k{color:var(--muted);width:52%;}
+  table.audit td.v{font-family:"IBM Plex Mono",monospace;text-align:right;color:var(--ink);}
+
+  .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .btn{appearance:none;border:1px solid var(--teal);background:var(--teal);color:#fff;font:inherit;font-size:13.5px;font-weight:600;
+       padding:9px 15px;border-radius:var(--radius);cursor:pointer;transition:background .12s;}
+  .btn:hover{background:var(--teal-bright);}
+  .btn.ghost{background:transparent;color:var(--teal);}
+  .btn.ghost:hover{background:var(--teal-wash);}
+  .btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+  .copied{color:var(--teal);font-size:12.5px;align-self:center;}
+  .copied[hidden]{display:none;}
+
+  /* Caveats */
+  .caveats{background:var(--amber-wash);border:1px solid var(--amber-line);border-radius:var(--radius);padding:18px 20px;margin-top:18px;}
+  .caveats h3{margin:0 0 10px;font-family:"Source Serif 4",Georgia,serif;font-size:15.5px;color:var(--amber);font-weight:600;}
+  .caveats ul{margin:0;padding-left:18px;color:#5a4415;font-size:13px;line-height:1.55;}
+  .caveats li{margin-bottom:7px;}
+  .caveats li:last-child{margin-bottom:0;}
+
+  footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;line-height:1.6;}
+  footer b{color:var(--ink-soft);}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;}}
+
+  /* Terms & fee gate (clickwrap) */
+  .gate{position:fixed;inset:0;background:rgba(21,35,41,.55);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .gate[hidden]{display:none;}
+  .gate-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);max-width:600px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(21,35,41,.28);}
+  .gate-head{padding:22px 24px 12px;border-bottom:1px solid var(--line-soft);}
+  .gate-kicker{color:var(--teal);font-size:12.5px;font-weight:600;margin:0 0 6px;}
+  .gate-head h2{margin:0;font-family:"Source Serif 4",Georgia,serif;font-size:22px;font-weight:600;}
+  .gate-body{padding:16px 24px;overflow-y:auto;font-size:13px;line-height:1.55;color:var(--ink-soft);}
+  .gate-body h3{font-family:"Source Serif 4",Georgia,serif;font-size:14px;color:var(--ink);margin:15px 0 5px;}
+  .gate-body p{margin:0 0 9px;}
+  .gate-body .fee{background:var(--teal-wash);border:1px solid #bcdad6;border-radius:var(--radius);padding:12px 14px;color:var(--ink);font-size:13.5px;}
+  .gate-body .fee b{color:var(--teal);}
+  .gate-check{display:flex;gap:10px;align-items:flex-start;padding:14px 24px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink);cursor:pointer;}
+  .gate-check input{margin-top:2px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--teal);}
+  .gate-actions{padding:0 24px 22px;}
+  .gate-actions .btn{width:100%;padding:12px;font-size:14.5px;}
+  .gate-actions .btn:disabled{background:var(--line);border-color:var(--line);color:var(--muted);cursor:not-allowed;}
+  .gate-actions .btn-pay{display:block;width:100%;text-align:center;text-decoration:none;background:transparent;color:var(--teal);border:1px solid var(--teal);margin-bottom:10px;box-sizing:border-box;}
+  .gate-actions .btn-pay:hover{background:var(--teal-wash);}
+  .gate-pay-note{font-size:11.5px;color:var(--muted);text-align:center;margin:10px 0 0;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="gate-card">
+    <div class="gate-head">
+      <p class="gate-kicker">Terms of use &amp; fee</p>
+      <h2 id="gateTitle">Before you use this calculator</h2>
+    </div>
+    <div class="gate-body">
+      <p class="fee">Use of this calculator is charged at <b>AUD&nbsp;$495.00 per use</b>, inclusive of GST. Proceeding to the calculator constitutes your agreement to this fee and to the terms set out below.</p>
+
+      <p>This calculator is operated by <b>The Trustee for Victorian Neuro &amp; Ortho Rehab Services Pty Ltd</b> (ABN 49&nbsp;344&nbsp;093&nbsp;742), the practice of Assoc. Prof. Vaidya Bala ("the provider").</p>
+
+      <h3>Nature and intended use</h3>
+      <p>This calculator produces a statistical estimate of remaining life expectancy following moderate-to-severe traumatic brain injury, based on the peer-reviewed actuarial model published in Bala (2026). It is a decision-support aid intended solely for suitably qualified health, rehabilitation and medico-legal professionals exercising their own independent judgement.</p>
+
+      <h3>An estimate, not a prediction</h3>
+      <p>Each result is a population mean for a group of people sharing the entered characteristics. It is not a prediction of any individual's lifespan and is not a guarantee. The life expectancy of any particular person may differ substantially from the estimate.</p>
+
+      <h3>Not advice; no professional relationship</h3>
+      <p>The calculator does not provide medical, clinical, legal or financial advice. Use of it does not create any clinician–patient or practitioner–client relationship, and it is not a substitute for individual clinical assessment or independent expert opinion.</p>
+
+      <h3>Known limitations</h3>
+      <p>The model does not account for factors including problematic substance use, psychiatric comorbidity or post-injury seizures; it is derived from United States cohorts of inpatient-rehabilitation survivors and predates the COVID-19 pandemic; its functional categories are broad; and the severity (SMR) mode is a screening approximation only. Results must be interpreted in light of these limitations.</p>
+
+      <h3>User responsibility and discretion</h3>
+      <p>Whether and how to rely on any output is entirely a matter for the user's professional discretion and responsibility. The user is responsible for the accuracy of the inputs entered, for interpreting outputs in their full clinical and evidentiary context, and for compliance with all applicable professional, ethical, evidentiary and regulatory obligations.</p>
+
+      <h3>No warranty; liability</h3>
+      <p>The calculator is provided "as is", without warranty of any kind as to accuracy, completeness or fitness for a particular purpose. To the maximum extent permitted by law, the provider excludes all liability for any loss or damage arising from use of, or reliance on, the calculator or its outputs. Nothing in these terms excludes, restricts or modifies any right or remedy that cannot lawfully be excluded, including under the Australian Consumer Law.</p>
+
+      <h3>Intended purpose</h3>
+      <p>The calculator is supplied as a structured actuarial aid to professional judgement. It is not intended to diagnose, treat, cure or prevent any disease or condition.</p>
+
+      <h3>Intellectual property and governing law</h3>
+      <p>The calculator and underlying model are © 2026 The Trustee for Victorian Neuro &amp; Ortho Rehab Services Pty Ltd (ABN 49&nbsp;344&nbsp;093&nbsp;742). The model is described in Bala (2026), J Brain Neuros Res 10:040. These terms are governed by the laws of New South Wales, Australia.</p>
+    </div>
+    <label class="gate-check" for="gateAgree">
+      <input type="checkbox" id="gateAgree">
+      <span>I have read and agree to these terms, and I understand the fee of AUD&nbsp;$495.00 (incl. GST) applies to this use.</span>
+    </label>
+    <div class="gate-actions">
+      <a class="btn btn-pay" id="gatePay" href="PASTE_YOUR_STRIPE_PAYMENT_LINK_HERE" target="_blank" rel="noopener">Pay the $495.00 fee (incl. GST)</a>
+      <button class="btn" id="gateAccept" disabled>Accept terms and open the calculator</button>
+      <p class="gate-pay-note">Payment opens securely in a new tab. Please complete payment before relying on any result.</p>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <header>
+    <p class="kicker">Actuarial estimator · moderate-to-severe TBI, 1-year survivors</p>
+    <h1 class="serif">Remaining life years after traumatic brain injury</h1>
+    <p class="lede">Enter a patient's characteristics to estimate expected remaining years of life, with the full <b>step-by-step audit trail</b> the estimate is built from. Implements the four-step disability-graded life-table procedure and the SMR screening fallback described in Bala (2026).</p>
+  </header>
+
+  <div class="grid">
+    <!-- INPUTS -->
+    <section class="panel panel-pad" aria-label="Patient inputs">
+      <h2 class="sec-title serif">Patient inputs</h2>
+      <p class="sec-note">Four inputs drive the estimate: current age, sex, and either functional category or injury severity.</p>
+
+      <div class="field">
+        <div class="flabel"><span>Current age</span><span class="val"><span id="ageVal">40</span> yrs</span></div>
+        <div class="age-row">
+          <input type="range" id="ageRange" min="16" max="90" value="40" step="1" aria-label="Current age (slider)">
+          <input type="number" id="ageNum" min="16" max="90" value="40" aria-label="Current age (years)">
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="flabel"><span>Sex</span></div>
+        <div class="seg" id="sexSeg" role="group" aria-label="Sex">
+          <button data-sex="female" aria-pressed="false">Female</button>
+          <button data-sex="male" aria-pressed="true">Male</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="flabel"><span>Estimation method</span></div>
+        <div class="seg" id="methodSeg" role="group" aria-label="Estimation method">
+          <button data-method="functional" aria-pressed="true">Functional (primary)</button>
+          <button data-method="smr" aria-pressed="false">Severity (screening)</button>
+        </div>
+      </div>
+
+      <!-- functional categories -->
+      <div class="field" id="funcField">
+        <div class="flabel"><span>Functional category</span></div>
+        <div class="opts" id="catOpts" role="radiogroup" aria-label="Functional category"></div>
+      </div>
+
+      <!-- severity -->
+      <div class="field" id="smrField" hidden>
+        <div class="flabel"><span>Injury severity</span></div>
+        <div class="opts" id="sevOpts" role="radiogroup" aria-label="Injury severity"></div>
+        <div class="custom-smr">
+          <label for="customSmr">Or custom SMR</label>
+          <input type="number" id="customSmr" min="1" max="20" step="0.1" placeholder="e.g. 3.0" aria-label="Custom standardised mortality ratio">
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <div>
+      <section class="panel" aria-label="Estimate" aria-live="polite">
+        <div class="result">
+          <p class="r-eyebrow">Estimated remaining life expectancy</p>
+          <div class="r-hero">
+            <span class="r-years" id="years">25</span>
+            <span class="r-unit">further years</span>
+          </div>
+          <p class="r-sub">Projected mean age at death <span class="mono" id="ageAtDeath">65</span> · General-population figure at this age <span class="mono" id="gpFig">39</span> yrs</p>
+          <div class="flag" id="rangeFlag" hidden></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><div class="k">Reduction vs general population</div><div class="v"><span id="redAbs">14</span> <small>yrs</small></div></div>
+          <div class="stat"><div class="k">Relative reduction</div><div class="v"><span id="redPct">36</span><small>%</small></div></div>
+          <div class="stat"><div class="k">Method</div><div class="v" style="font-size:14px" id="methLabel">Functional</div></div>
+        </div>
+
+        <div class="curve-wrap">
+          <div class="curve-head">
+            <span class="t">Survival curve from current age</span>
+            <span class="legend">
+              <span><i style="border-color:var(--teal)"></i>This patient</span>
+              <span><i style="border-color:var(--grey-ref)"></i>General population</span>
+            </span>
+          </div>
+          <svg id="curve" viewBox="0 0 640 240" preserveAspectRatio="none" role="img" aria-label="Modelled survival curve compared with the general population"></svg>
+        </div>
+      </section>
+
+      <section class="panel ledger" aria-label="Audit trail">
+        <div class="panel-pad">
+          <h2 class="sec-title serif">Audit trail</h2>
+          <p class="sec-note">Every quantity that produced the estimate, for review and reporting.</p>
+          <table class="audit"><tbody id="auditBody"></tbody></table>
+          <div class="actions">
+            <button class="btn" id="copyBtn">Copy summary for report</button>
+            <button class="btn ghost" id="resetBtn">Reset</button>
+            <span class="copied" id="copied" hidden>Copied</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="caveats">
+        <h3>Read before use — this is an estimate, not a prediction</h3>
+        <ul>
+          <li>The figure is a <b>population mean</b> for a group of similar patients. It is not a guaranteed lifespan for any one person and must be presented as such.</li>
+          <li>The model omits several known mortality modifiers, including problematic alcohol or drug use, psychiatric comorbidity, and post-injury seizures. Adjust by clinical judgement for the specific case.</li>
+          <li>Functional categories are broad. The "does not walk, fed by others" group overstates survival in the most extreme neurological states (prolonged disorders of consciousness, gastrostomy dependence); "walks well" is pessimistic for people living wholly independently.</li>
+          <li>Parameters derive from United States moderate-to-severe TBI cohorts of inpatient-rehabilitation survivors, and predate the COVID-19 pandemic. Extrapolation to other health systems, untreated injury, or uncomplicated mild TBI is uncertain.</li>
+          <li>The severity (SMR) mode is a <b>screening approximation</b> only, assuming constant relative risk across age. Prefer the functional method where FIM data exist.</li>
+          <li>Intended as a structured aid to — not a replacement for — individualised clinical judgement. Pair every estimate with its caveats and, where required, a standard error.</li>
+        </ul>
+      </div>
+
+      <footer>
+        <b>Fee:</b> Use of this calculator is charged at AUD $495.00 per use, inclusive of GST. Proceeding constitutes acceptance of the terms of use.<br>
+        <b>Source model:</b> Bala V (2026), <i>An Evidence-Based Algorithmic Model for Estimating Remaining Life Years After Traumatic Brain Injury.</i> J Brain Neuros Res 10:040. Functional estimates reproduce the published Table 2 (calibrated to the TBI Model Systems); the general-population schedule is fitted to reproduce the article's US-2018 reference life expectancies.<br>
+        <b>Regulatory note:</b> software intended for the prognosis or prediction of a disease or its consequences may meet the definition of a medical device in Australia and require ARTG inclusion unless exempt. Confirm regulatory status before any commercial supply.
+      </footer>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- Published Table 2 (additional years by age / sex / category) ---------- */
+const T2 = {
+  female:{
+    fed:      {20:24,30:19,40:14,50:11,60:8},
+    self:     {20:40,30:32,40:25,50:18,60:13},
+    somewalk: {20:49,30:40,40:32,50:24,60:18},
+    walkswell:{20:55,30:45,40:37,50:29,60:21}
+  },
+  male:{
+    fed:      {20:24,30:19,40:14,50:11,60:8},
+    self:     {20:40,30:32,40:25,50:18,60:13},
+    somewalk: {20:43,30:35,40:27,50:20,60:14},
+    walkswell:{20:49,30:40,40:32,50:24,60:18}
+  }
+};
+const CATS = [
+  {id:'walkswell', name:'Walks well',            def:'FIM locomotion = 7',                                 rr:'RR 1.0', Rg:1.0,  rho:1.06, amb:true},
+  {id:'somewalk',  name:'Some walking',          def:'FIM locomotion = 6',                                 rr:'RR 1.5', Rg:1.5,  rho:1.06, amb:true},
+  {id:'self',      name:'Does not walk, self-feeds', def:'FIM locomotion ≤ 5 (or wheelchair) and eating ≥ 4', rr:'RR 2.8', Rg:2.8,  rho:1.06, amb:false},
+  {id:'fed',       name:'Does not walk, fed by others', def:'FIM locomotion ≤ 5 (or wheelchair) and eating ≤ 3', rr:'RR 21.1', Rg:21.1, rho:1.04, amb:false}
+];
+const SEVS = [
+  {id:'mild',     name:'Mild',     def:'Approx. SMR 1.7', smr:1.7},
+  {id:'moderate', name:'Moderate', def:'Approx. SMR 2.8', smr:2.8},
+  {id:'severe',   name:'Severe',   def:'Approx. SMR 4.5', smr:4.5}
+];
+
+/* ---------- General-population life table (fitted Gompertz–Makeham) ---------- */
+/* mu(age) = A + B*exp(C*age); reproduces the article's US-2018 GP life expectancies */
+const GM = {
+  female:{A:3.068687e-4, B:2.969116e-5, C:0.091008},
+  male:  {A:8.806031e-4, B:5.590360e-5, C:0.086903}
+};
+const OMEGA = 110;
+function gpQ(sex){
+  const {A,B,C}=GM[sex]; const q=[];
+  for(let a=0;a<=OMEGA;a++){const mu=A+B*Math.exp(C*a); q.push(a===OMEGA?1:Math.min(1,1-Math.exp(-mu)));}
+  return q;
+}
+/* remaining life expectancy from age `a` given a one-year death-prob array */
+function leFromQ(q,a){
+  let l=1,T=0,prevL=1;
+  const lvals=[]; let cur=1;
+  for(let age=a;age<=OMEGA;age++){lvals.push(cur); cur=cur*(1-q[age]);}
+  for(let i=0;i<lvals.length-1;i++){T+=0.5*(lvals[i]+lvals[i+1]);}
+  T+=0.5*lvals[lvals.length-1];
+  return T/lvals[0];
+}
+/* survivorship array l(age) from current age (radix 1) */
+function survFromQ(q,a){
+  const out=[]; let cur=1;
+  for(let age=a;age<=OMEGA;age++){out.push({age,l:cur}); cur=cur*(1-q[age]);}
+  return out;
+}
+
+/* ---------- Functional method: number from Table 2, curve from calibrated hazard ---------- */
+function interpTable(sex,catId,age){
+  const row=T2[sex][catId];
+  const xs=[20,30,40,50,60];
+  let extrap=false, a=age;
+  if(age<20){extrap=true;} if(age>60){extrap=true;}
+  // clamp for slope selection but keep true age for linear extension
+  let lo,hi;
+  if(age<=20){lo=20;hi=30;}
+  else if(age>=60){lo=50;hi=60;}
+  else{ for(let i=0;i<xs.length-1;i++){ if(age>=xs[i]&&age<=xs[i+1]){lo=xs[i];hi=xs[i+1];break;} } }
+  const yLo=row[lo], yHi=row[hi];
+  const val=yLo+(yHi-yLo)*(age-lo)/(hi-lo);
+  return {val:Math.max(0,val), extrap};
+}
+/* calibrate hazard scale so integrated LE == target at current age; return q array */
+function functionalQ(sex,cat,age,target){
+  const qg=gpQ(sex);
+  const Rs=(cat.amb && sex==='male')?1.5:1.0;
+  function qArrFor(scale){
+    const q=[];
+    for(let a=0;a<=OMEGA;a++){
+      const h=scale*Math.pow(cat.rho,a)*cat.Rg*Rs;
+      let qt=1-Math.exp(-h);
+      qt=Math.max(qt,qg[a]);            // Step 2: general-population floor
+      q.push(a===OMEGA?1:Math.min(1,qt));
+    }
+    return q;
+  }
+  // bisection on scale
+  let lo=1e-7,hi=5,q;
+  for(let it=0;it<40;it++){
+    const mid=Math.sqrt(lo*hi);
+    q=qArrFor(mid);
+    const le=leFromQ(q,age);
+    if(le>target) lo=mid; else hi=mid;   // higher scale -> more mortality -> lower LE
+  }
+  return {q:qArrFor(Math.sqrt(lo*hi)), Rs};
+}
+
+/* ---------- SMR method ---------- */
+function smrQ(sex,smr){
+  const qg=gpQ(sex); const q=[];
+  for(let a=0;a<=OMEGA;a++){ q.push(a===OMEGA?1:Math.min(1,smr*qg[a])); }
+  return q;
+}
+
+/* ---------- State ---------- */
+const state={age:40,sex:'male',method:'functional',cat:'self',sev:'moderate',customSmr:null};
+
+/* ---------- Build option lists ---------- */
+function buildOpts(){
+  const cw=document.getElementById('catOpts');
+  cw.innerHTML=CATS.map(c=>`
+    <div class="opt" role="radio" tabindex="0" data-cat="${c.id}" data-on="${c.id===state.cat}" aria-checked="${c.id===state.cat}">
+      <span class="radio"></span>
+      <span class="otxt"><span class="oname">${c.name}</span><span class="odef">${c.def}</span></span>
+      <span class="orr">${c.rr}</span>
+    </div>`).join('');
+  const sw=document.getElementById('sevOpts');
+  sw.innerHTML=SEVS.map(s=>`
+    <div class="opt" role="radio" tabindex="0" data-sev="${s.id}" data-on="${s.id===state.sev}" aria-checked="${s.id===state.sev}">
+      <span class="radio"></span>
+      <span class="otxt"><span class="oname">${s.name}</span><span class="odef">${s.def}</span></span>
+    </div>`).join('');
+  cw.querySelectorAll('.opt').forEach(o=>{
+    const pick=()=>{state.cat=o.dataset.cat; state.customSmr=null; refresh();};
+    o.addEventListener('click',pick);
+    o.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+  });
+  sw.querySelectorAll('.opt').forEach(o=>{
+    const pick=()=>{state.sev=o.dataset.sev; state.customSmr=null; document.getElementById('customSmr').value=''; refresh();};
+    o.addEventListener('click',pick);
+    o.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+  });
+}
+
+/* ---------- Draw curve ---------- */
+function drawCurve(patientSurv, gpSurv){
+  const W=640,H=240,padL=6,padR=6,padT=10,padB=22;
+  const maxAge=Math.min(OMEGA, Math.max(patientSurv[patientSurv.length-1].age, state.age+70, 90));
+  const a0=state.age;
+  const xOf=a=>padL+(a-a0)/(maxAge-a0)*(W-padL-padR);
+  const yOf=l=>padT+(1-l)*(H-padT-padB);
+  const path=arr=>arr.filter(p=>p.age<=maxAge).map((p,i)=>(i?'L':'M')+xOf(p.age).toFixed(1)+' '+yOf(p.l).toFixed(1)).join(' ');
+  // gridlines at 25/50/75/100% survival + age ticks
+  let grid='';
+  [0,.25,.5,.75,1].forEach(f=>{const y=yOf(f);grid+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--line-soft)" stroke-width="1"/>`;});
+  let ticks='';
+  const step=(maxAge-a0)<=30?10:20;
+  for(let a=Math.ceil(a0/step)*step;a<=maxAge;a+=step){
+    const x=xOf(a); ticks+=`<line x1="${x}" y1="${padT}" x2="${x}" y2="${H-padB}" stroke="var(--line-soft)" stroke-width="1"/>`;
+    ticks+=`<text x="${x}" y="${H-6}" fill="var(--muted)" font-size="11" font-family="IBM Plex Mono,monospace" text-anchor="middle">${a}</text>`;
+  }
+  const svg=`
+    ${grid}${ticks}
+    <path d="${path(gpSurv)}" fill="none" stroke="var(--grey-ref)" stroke-width="2" stroke-dasharray="4 3"/>
+    <path d="${path(patientSurv)}" fill="none" stroke="var(--teal)" stroke-width="2.5"/>
+    <text x="${padL}" y="${padT+9}" fill="var(--muted)" font-size="11" font-family="IBM Plex Mono,monospace">100%</text>
+    <text x="${padL}" y="${yOf(0)-4}" fill="var(--muted)" font-size="11" font-family="IBM Plex Mono,monospace">0%</text>`;
+  document.getElementById('curve').innerHTML=svg;
+}
+
+/* ---------- Refresh everything ---------- */
+function refresh(){
+  // sync controls
+  document.getElementById('ageVal').textContent=state.age;
+  document.getElementById('ageRange').value=state.age;
+  document.getElementById('ageNum').value=state.age;
+  document.getElementById('funcField').hidden = state.method!=='functional';
+  document.getElementById('smrField').hidden  = state.method!=='functional'?false:true;
+  document.getElementById('smrField').hidden  = state.method!=='smr';
+  document.querySelectorAll('#catOpts .opt').forEach(o=>{o.dataset.on=(o.dataset.cat===state.cat);o.setAttribute('aria-checked',o.dataset.cat===state.cat);});
+  document.querySelectorAll('#sevOpts .opt').forEach(o=>{o.dataset.on=(o.dataset.sev===state.sev);o.setAttribute('aria-checked',o.dataset.sev===state.sev);});
+
+  const sex=state.sex, age=state.age;
+  const gpLE=leFromQ(gpQ(sex),age);
+  const gpSurv=survFromQ(gpQ(sex),age);
+  let e, patientSurv, audit=[], flag='', methLabel;
+
+  if(state.method==='functional'){
+    const cat=CATS.find(c=>c.id===state.cat);
+    const {val,extrap}=interpTable(sex,state.cat,age);
+    e=val;
+    const {q,Rs}=functionalQ(sex,cat,age,e);
+    patientSurv=survFromQ(q,age);
+    methLabel='Functional';
+    audit=[
+      ['Method','Disability-graded life table'],
+      ['Functional category',cat.name],
+      ['Category multiplier (R_g)',cat.Rg.toFixed(1)],
+      ['Sex multiplier (R_s)',Rs.toFixed(1)+(cat.amb&&sex==='male'?' (ambulatory male)':'')],
+      ['Age multiplier (ρ_g)',cat.rho.toFixed(2)+'/yr'],
+      ['General-population floor','Applied (Step 2)'],
+      ['Source','Table 2, calibrated to TBIMS']
+    ];
+    if(extrap) flag='Age is outside the published table (validated 20–60). Value linearly extrapolated — treat with added caution.';
+  } else {
+    let smr, sevName;
+    if(state.customSmr){smr=state.customSmr; sevName='Custom';}
+    else{const s=SEVS.find(x=>x.id===state.sev); smr=s.smr; sevName=s.name;}
+    const q=smrQ(sex,smr);
+    e=leFromQ(q,age);
+    patientSurv=survFromQ(q,age);
+    methLabel='Severity (SMR)';
+    audit=[
+      ['Method','SMR screening (q = min[1, SMR·q_GP])'],
+      ['Injury severity',sevName],
+      ['Standardised mortality ratio',smr.toFixed(1)],
+      ['General-population floor','Implicit (SMR ≥ 1)'],
+      ['Note','Screening estimate — less accurate']
+    ];
+    flag='Screening method: assumes constant relative risk across age. Use the functional method where FIM data exist.';
+  }
+
+  const ageAtDeath=age+e;
+  const redAbs=gpLE-e;
+  const redPct=gpLE>0?(redAbs/gpLE*100):0;
+
+  document.getElementById('years').textContent=e.toFixed(0);
+  document.getElementById('ageAtDeath').textContent=ageAtDeath.toFixed(0);
+  document.getElementById('gpFig').textContent=gpLE.toFixed(1);
+  document.getElementById('redAbs').textContent=redAbs.toFixed(1);
+  document.getElementById('redPct').textContent=redPct.toFixed(0);
+  document.getElementById('methLabel').textContent=methLabel;
+
+  const rf=document.getElementById('rangeFlag');
+  if(flag){rf.textContent=flag; rf.hidden=false;} else {rf.hidden=true;}
+
+  document.getElementById('auditBody').innerHTML=audit.map(r=>`<tr><td class="k">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('')
+    +`<tr><td class="k">Estimated remaining years (e_a)</td><td class="v">${e.toFixed(1)}</td></tr>`
+    +`<tr><td class="k">Projected age at death</td><td class="v">${ageAtDeath.toFixed(1)}</td></tr>`
+    +`<tr><td class="k">General-population e_a</td><td class="v">${gpLE.toFixed(1)}</td></tr>`;
+
+  drawCurve(patientSurv,gpSurv);
+  window._summary=buildSummary(sex,age,methLabel,e,ageAtDeath,gpLE,redAbs,redPct,audit,flag);
+}
+
+function buildSummary(sex,age,method,e,aad,gpLE,redAbs,redPct,audit,flag){
+  const L=[];
+  L.push('ESTIMATED REMAINING LIFE YEARS AFTER TBI');
+  L.push('Model: Bala (2026), J Brain Neuros Res 10:040');
+  L.push('');
+  L.push(`Inputs: age ${age}, ${sex}, method: ${method}`);
+  audit.forEach(r=>L.push(`  ${r[0]}: ${r[1]}`));
+  L.push('');
+  L.push(`Estimated remaining life expectancy: ${e.toFixed(1)} years`);
+  L.push(`Projected mean age at death: ${aad.toFixed(1)} years`);
+  L.push(`General-population figure at this age: ${gpLE.toFixed(1)} years`);
+  L.push(`Reduction vs general population: ${redAbs.toFixed(1)} years (${redPct.toFixed(0)}%)`);
+  L.push('');
+  if(flag) L.push(`CAUTION: ${flag}`);
+  L.push('This is a population mean for similar patients, not a guaranteed lifespan. It omits');
+  L.push('modifiers such as substance use, psychiatric comorbidity and seizures, derives from');
+  L.push('US moderate-to-severe TBI cohorts, and is a structured aid to — not a replacement');
+  L.push('for — individualised clinical judgement.');
+  return L.join('\n');
+}
+
+/* ---------- Wire controls ---------- */
+function clampAge(v){v=Math.round(v||0);return Math.max(16,Math.min(90,v));}
+document.getElementById('ageRange').addEventListener('input',e=>{state.age=clampAge(+e.target.value);refresh();});
+document.getElementById('ageNum').addEventListener('input',e=>{state.age=clampAge(+e.target.value);refresh();});
+document.getElementById('sexSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.sex=b.dataset.sex;document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));refresh();});
+document.getElementById('methodSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;state.method=b.dataset.method;document.querySelectorAll('#methodSeg button').forEach(x=>x.setAttribute('aria-pressed',x===b));refresh();});
+document.getElementById('customSmr').addEventListener('input',e=>{const v=parseFloat(e.target.value);state.customSmr=(v&&v>=1)?v:null;refresh();});
+document.getElementById('resetBtn').addEventListener('click',()=>{Object.assign(state,{age:40,sex:'male',method:'functional',cat:'self',sev:'moderate',customSmr:null});document.getElementById('customSmr').value='';document.querySelectorAll('#sexSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.sex==='male'));document.querySelectorAll('#methodSeg button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.method==='functional'));refresh();});
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  navigator.clipboard.writeText(window._summary||'').then(()=>{const c=document.getElementById('copied');c.hidden=false;setTimeout(()=>c.hidden=true,1800);});
+});
+
+buildOpts();
+refresh();
+
+/* ---------- Terms & fee gate ---------- */
+(function(){
+  var gate=document.getElementById('gate'),
+      agree=document.getElementById('gateAgree'),
+      accept=document.getElementById('gateAccept');
+  if(!gate) return;
+  document.body.style.overflow='hidden';
+  agree.addEventListener('change',function(){accept.disabled=!agree.checked;});
+  accept.addEventListener('click',function(){
+    gate.hidden=true;
+    document.body.style.overflow='';
+  });
+})();
+</script>
+</body>
+</html>
